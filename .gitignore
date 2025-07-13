@@ -1,0 +1,8 @@
+# Ignores all files specified here when pushing to git 
+
+#Ignore .env files
+#Ignore node_modules
+#Ignore other files you don't want to share
+
+.env
+**/node_modules
