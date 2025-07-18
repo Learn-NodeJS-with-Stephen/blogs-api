@@ -1,7 +1,7 @@
 import express from "express";
 import userRoutes from "./routes/usersRoute.js";
 import blogsRoutes from "./routes/blogsRoute.js"
-// import adminRoutes from "./routes/adminRoute.js";
+import adminRoutes from "./routes/adminRoute.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import db from "./config/db.js";
@@ -19,7 +19,7 @@ app.use(
 
 app.use("/users", userRoutes);
 app.use("/blogs", blogsRoutes);
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 
 db.getConnection()
   .then((connection) => {

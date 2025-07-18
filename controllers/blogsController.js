@@ -29,19 +29,24 @@ class BlogsController {
 
   async updatePost(req, res) {
     const { title, content, blog_category_id } = req.body;
-    const [result] = await db.query(
-      "UPDATE blog_posts SET title=?, content=?, blog_category_id=? WHERE id=? AND user_id=?,"[
-        (title, content, blog_category_id, req.params.id, req.user.id)
-      ]
-    );
 
-    if (result.affectedRows === 0) {
-      return res
-        .status(403)
-        .json({ success: false, message: "blog not found" });
+    try {
+      const [result] = await db.query(
+        "UPDATE blog_posts SET title = ?, content = ?, blog_category_id = ? WHERE id = ? AND user_id = ?",
+        [title, content, blog_category_id, req.params.id, req.user.id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Blog not found or unauthorized" });
+      }
+
+      res.json({ success: true, message: "Post updated successfully" });
+    } catch (err) {
+      console.error("Update error:", err);
+      res.status(500).json({ success: false, error: err.message });
     }
-
-    res.json({ success: true, message: "Post updated" });
   }
 
   async deletePost(req, res) {
@@ -70,3 +75,5 @@ class BlogsController {
 }
 
 export default new BlogsController();
+
+// Which  kind cake be

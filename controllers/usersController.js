@@ -6,7 +6,8 @@ dotenv.config();
 
 class UsersController {
   async createUser(req, res) {
-    const { first_name, last_name, email, username, password } = req.body;
+    const { first_name, last_name, email, username, user_type, password } =
+      req.body;
     if (!first_name || !last_name || !email || !username || !password) {
       return res.status(400).json({
         success: false,
@@ -26,8 +27,16 @@ class UsersController {
 
     const hashedpassword = bcrypt.hashSync(password, 8);
     const [result] = await db.query(
-      "INSERT INTO users (first_name, last_name, username, email, password, user_type) VALUES (?, ?, ?, ?, ?, ?)",
-      [first_name, last_name, username, email, hashedpassword, "user"]
+      "INSERT INTO users (first_name, last_name, username, email, user_type, password) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        first_name,
+        last_name,
+        username,
+        email,
+        user_type,
+        hashedpassword,
+        "user",
+      ]
     );
     res.status(201).json({
       success: true,
