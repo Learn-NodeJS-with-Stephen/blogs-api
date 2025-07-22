@@ -53,6 +53,7 @@ class UsersController {
     );
 
     if (user.length === 0 || !bcrypt.compareSync(password, user[0].password)) {
+      console.log("message");
       return res
         .status(401)
         .json({ success: false, message: "Invalid login details" });
