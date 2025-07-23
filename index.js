@@ -1,6 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/usersRoute.js";
-import blogsRoutes from "./routes/blogsRoute.js"
+import blogsRoutes from "./routes/blogsRoute.js";
 import adminRoutes from "./routes/adminRoute.js";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -16,6 +16,8 @@ app.use(
     origin: "*",
   })
 );
+
+console.log("Hello world");
 
 app.use("/users", userRoutes);
 app.use("/blogs", blogsRoutes);
