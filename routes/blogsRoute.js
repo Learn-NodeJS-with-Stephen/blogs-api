@@ -3,6 +3,8 @@ import usersController from "../controllers/usersController.js";
 import { auth } from "../middleware/auth.js";
 import blogsController from "../controllers/blogsController.js";
 
+console.log("LTesting Login");
+
 const router = express.Router();
 
 router.post("/", auth, blogsController.createPost);
