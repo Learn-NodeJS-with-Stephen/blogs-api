@@ -17,8 +17,6 @@ app.use(
   })
 );
 
-console.log("Hello world");
-
 app.use("/users", userRoutes);
 app.use("/blogs", blogsRoutes);
 app.use("/admin", adminRoutes);
