@@ -49,6 +49,10 @@ class BlogsController {
     }
   }
 
+  // TODO: first check if the post exist if not return the error (It will be thesame for the update, getPost and deletePost)
+  // TODO: Create an endpoint for a single post
+  // TODO: Get my post (simplier to get all post but it will only get the post created by me or similer ID  )
+
   async deletePost(req, res) {
     const [result] = await db.query(
       "UPDATE blog_posts SET is_deleted = TRUE WHERE id = ? AND user_id = ?",
@@ -75,5 +79,3 @@ class BlogsController {
 }
 
 export default new BlogsController();
-
-// Which  kind cake be

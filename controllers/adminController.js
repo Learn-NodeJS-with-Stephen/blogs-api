@@ -39,6 +39,7 @@ class AdminController {
   async restrictPost(req, res) {
     const { restriction_reason } = req.body;
     const blogId = req.params.id;
+    // db.
     await db.query("UPDATE blog_posts SET is_restricted = TRUE WHERE id = ?", [
       blogId,
     ]);
@@ -48,6 +49,11 @@ class AdminController {
     );
     res.json({ success: true, message: "Blog post restricted" });
   }
+
+  // TODO: after finding the blog, It should look for the blog pos, if it doesn't find the post it should return with the error "blog post doesn't exist"
+  // TODO: For restrist and delete post it should check if the post has already been restricted or deleted. 
+  // TODO: All the code should be in a try-catch block (Error handling) 
+  // TODO: When you are adding a new user or new category you first check if the name already exist in the DB 
 
   async deletePost(req, res) {
     const { deletion_reason } = req.body;
@@ -88,5 +94,7 @@ class AdminController {
   }
 }
 }
+
+
 
 export default new AdminController();
