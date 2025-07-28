@@ -124,6 +124,12 @@ class BlogsController {
         [req.user.id]
       );
 
+      if (posts.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "No post has been created yet" });
+      }
+
       res.json({ success: true, data: posts });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
@@ -149,6 +155,6 @@ class BlogsController {
 
 export default new BlogsController();
 
-// TODO:first check if the post exist if not return the error (It will be thesame for the update, getPost and deletePost)
-// TODO: Create an endpoint for a single post
-// TODO: Get my post (simplier to get all post but it will only get the post created by me or similer ID  )
+// TODO:first check if the post exist if not return the error (It will be thesame for the update, getPost and deletePost) ✅
+// TODO: Create an endpoint for a single post ✅
+// TODO: Get my post (simplier to get all post but it will only get the post created by me or similer ID) ✅
