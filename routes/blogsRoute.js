@@ -11,5 +11,6 @@ router.delete("/:id", auth, blogsController.deletePost);
 router.get("/", auth, blogsController.getAllPosts);
 router.get("/:id", auth, blogsController.getSinglePost);
 router.get("/my/posts", auth, blogsController.getMyPost);
+router.get("/:id/similar", auth, blogsController.getSimilarPosts);
 
 export default router;
