@@ -1,5 +1,6 @@
 import { error } from "console";
 import db from "../config/db.js";
+import { auth } from "../middleware/auth.js";
 
 class BlogsController {
   async createPost(req, res) {
@@ -136,7 +137,7 @@ class BlogsController {
     }
   }
 
-  async getAllPosts(req, res) {
+  async getAllPost(req, res) {
     try {
       const [posts] =
         await db.query(`SELECT bp.id, title, content, bp.created_at, u.username, bc.name AS category 
