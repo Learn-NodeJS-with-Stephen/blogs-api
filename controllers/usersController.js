@@ -39,10 +39,25 @@ class UsersController {
         ]
       );
 
+      const token = jwt.sign(
+        { id: result.insertId, user_type: user_type || "user" },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
       res.status(201).json({
         success: true,
         message: "Account created successfully",
         userId: result.insertId,
+        token,
+        user: {
+          id: result.insertId,
+          first_name,
+          last_name,
+          username,
+          email,
+          user_type: user_type || "user",
+        },
       });
     } catch (error) {
       console.error("Create user error:", error);
