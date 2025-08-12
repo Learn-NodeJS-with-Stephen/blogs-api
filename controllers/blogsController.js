@@ -153,6 +153,27 @@ class BlogsController {
     }
   }
 
+  // Pagination and sorting for all posts
+  async getAllPostWithPagination(req, res) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const [posts] = await db.query(
+      `SELECT bp.id, title, content, bp.created_at, u.username, bc.name AS category
+       FROM blog_posts bp
+       JOIN users u ON u.id = bp.user_id
+       JOIN blog_categories bc ON bp.blog_category_id = bc.id
+       WHERE bp.is_deleted = FALSE AND bp.is_restricted = FALSE
+       ORDER BY bp.created_at DESC
+       LIMIT ?, ?`,
+      [offset, limit]
+    );
+
+    res.json({ success: true, data: posts });
+  }
+  
+
   async getSimilarPosts(req, res) {
     try {
       const postId = req.params.id;

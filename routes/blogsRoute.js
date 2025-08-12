@@ -12,5 +12,6 @@ router.get("/", blogsController.getAllPost);
 router.get("/:id", auth, blogsController.getSinglePost);
 router.get("/my/post", auth, blogsController.getMyPost);
 router.get("/:id/similar", auth, blogsController.getSimilarPosts);
+router.get("/pagination", blogsController.getAllPostWithPagination);
 
 export default router;
