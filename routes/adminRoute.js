@@ -15,5 +15,6 @@ router.put("/posts/:id/restrict", adminController.restrictPost);
 router.put("/posts/:id/delete", adminController.deletePost);
 router.put("/users/:id/restrict", adminController.restrictUser);
 router.post("/category", adminController.createCategory);
+router.get("/dashboard", adminController.adminDashboard);
 
 export default router;

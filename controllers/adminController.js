@@ -48,6 +48,40 @@ class AdminController {
     }
   }
 
+  async adminDashboard(req, res) {
+    // Total post
+    // Registered user
+    // Active authors
+    // Total Comments
+
+    try {
+      const [total_users] = await db.query(
+        `SELECT COUNT(*) AS total_users FROM users`
+      );
+      const [total_posts] = await db.query(
+        `SELECT COUNT(*) AS total_posts FROM blog_posts`
+      );
+      // const [total_comments] = await db.query(
+      //   `SELECT COUNT(*) AS total_comments FROM blog_comments`
+      // );
+      const [active_authors] = await db.query(
+        `SELECT COUNT(DISTINCT user_id) AS active_authors FROM blog_posts`
+      );
+
+      res.json({
+        success: true,
+        data: {
+          total_users: total_users[0].total_users,
+          total_posts: total_posts[0].total_posts,
+          // total_comments: total_comments[0].total_comments,
+          active_authors: active_authors[0].active_authors,
+        },
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async restrictPost(req, res) {
     try {
       const { restriction_reason } = req.body;
