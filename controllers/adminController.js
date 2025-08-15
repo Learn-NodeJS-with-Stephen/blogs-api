@@ -53,6 +53,7 @@ class AdminController {
     // Registered user
     // Active authors
     // Total Comments
+    // Get all user
 
     try {
       const [total_users] = await db.query(
@@ -68,6 +69,8 @@ class AdminController {
         `SELECT COUNT(DISTINCT user_id) AS active_authors FROM blog_posts`
       );
 
+      const [all_users] = await db.query(`SELECT * FROM users`);
+
       res.json({
         success: true,
         data: {
@@ -75,6 +78,7 @@ class AdminController {
           total_posts: total_posts[0].total_posts,
           // total_comments: total_comments[0].total_comments,
           active_authors: active_authors[0].active_authors,
+          all_users: all_users,
         },
       });
     } catch (err) {
@@ -140,6 +144,36 @@ class AdminController {
         [blogId, deletion_reason]
       );
       res.json({ success: true, message: "Post deleted" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  // View User Profile
+  async viewUserProfile(req, res) {
+    try {
+      const userId = req.params.id;
+
+      // Get user info
+      const [users] = await db.query(
+        "SELECT id, username, email, user_type, is_active FROM users WHERE id = ?",
+        [userId]
+      );
+      if (users.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "User does not exist" });
+
+      // Get user's posts
+      const [posts] = await db.query(
+        "SELECT id, title, content, created_at, is_deleted, is_restricted FROM blog_posts WHERE user_id = ?",
+        [userId]
+      );
+
+      // Attach posts to user object
+      const user = { ...users[0], posts };
+
+      res.json({ success: true, data: { user } });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }
