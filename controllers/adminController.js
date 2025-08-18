@@ -233,6 +233,9 @@ class AdminController {
       res.status(500).json({ success: false, error: err.message });
     }
   }
+
+  // Post Comment
+  
 }
 
 export default new AdminController();

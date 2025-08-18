@@ -2,6 +2,7 @@ import express from "express";
 import usersController from "../controllers/usersController.js";
 import { auth } from "../middleware/auth.js";
 import blogsController from "../controllers/blogsController.js";
+import commentController from "../controllers/commentController.js";
 
 const router = express.Router();
 
