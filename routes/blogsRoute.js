@@ -16,9 +16,9 @@ router.get("/pagination", blogsController.getAllPostWithPagination);
 
 // Comment
 router.get("/:post_id/comments", auth, blogsController.getCommentsForPost);
-router.post("/:post_id/comments", auth, blogsController.addComment);
-router.put("/comments/:id", auth, blogsController.editComment);
-router.delete("/comments/:id", auth, blogsController.deleteComment);
+router.post("/:post_id/comment", auth, blogsController.addComment);
+router.put("/comment/:id", auth, blogsController.editComment);
+router.delete("/comment/:id", auth, blogsController.deleteComment);
 
 // Likess
 router.post("/:post_id/like", auth, blogsController.likePost);
