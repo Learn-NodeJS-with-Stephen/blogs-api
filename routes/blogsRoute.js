@@ -21,9 +21,9 @@ router.put("/comments/:id", auth, blogsController.editComment);
 router.delete("/comments/:id", auth, blogsController.deleteComment);
 
 // Likess
-router.post("/posts/:post_id/like", auth, blogsController.likePost);
-router.delete("/posts/:post_id/like", auth, blogsController.unlikePost);
-router.get("/posts/:post_id/like/:user_id", blogsController.hasUserLikedPost);
-router.get("/posts/:post_id/likes", blogsController.getPostLikes);
+router.post("/:post_id/like", auth, blogsController.likePost);
+router.delete("/:post_id/like", auth, blogsController.unlikePost);
+router.get("/:post_id/like/:user_id", blogsController.hasUserLikedPost);
+router.get("/:post_id/likes", blogsController.getPostLikes);
 
 export default router;
