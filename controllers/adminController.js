@@ -48,6 +48,44 @@ class AdminController {
     }
   }
 
+  async adminDashboard(req, res) {
+    // Total post
+    // Registered user
+    // Active authors
+    // Total Comments
+    // Get all user
+
+    try {
+      const [total_users] = await db.query(
+        `SELECT COUNT(*) AS total_users FROM users`
+      );
+      const [total_posts] = await db.query(
+        `SELECT COUNT(*) AS total_posts FROM blog_posts`
+      );
+      // const [total_comments] = await db.query(
+      //   `SELECT COUNT(*) AS total_comments FROM blog_comments`
+      // );
+      const [active_authors] = await db.query(
+        `SELECT COUNT(DISTINCT user_id) AS active_authors FROM blog_posts`
+      );
+
+      const [all_users] = await db.query(`SELECT * FROM users`);
+
+      res.json({
+        success: true,
+        data: {
+          total_users: total_users[0].total_users,
+          total_posts: total_posts[0].total_posts,
+          // total_comments: total_comments[0].total_comments,
+          active_authors: active_authors[0].active_authors,
+          all_users: all_users,
+        },
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async restrictPost(req, res) {
     try {
       const { restriction_reason } = req.body;
@@ -111,6 +149,36 @@ class AdminController {
     }
   }
 
+  // View User Profile
+  async viewUserProfile(req, res) {
+    try {
+      const userId = req.params.id;
+
+      // Get user info
+      const [users] = await db.query(
+        "SELECT id, username, email, user_type, is_active FROM users WHERE id = ?",
+        [userId]
+      );
+      if (users.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "User does not exist" });
+
+      // Get user's posts
+      const [posts] = await db.query(
+        "SELECT id, title, content, created_at, is_deleted, is_restricted FROM blog_posts WHERE user_id = ?",
+        [userId]
+      );
+
+      // Attach posts to user object
+      const user = { ...users[0], posts };
+
+      res.json({ success: true, data: { user } });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async restrictUser(req, res) {
     try {
       const userId = req.params.id;
@@ -165,6 +233,9 @@ class AdminController {
       res.status(500).json({ success: false, error: err.message });
     }
   }
+
+  // Post Comment
+  
 }
 
 export default new AdminController();

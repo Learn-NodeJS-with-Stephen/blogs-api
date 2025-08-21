@@ -14,4 +14,16 @@ router.get("/my/post", auth, blogsController.getMyPost);
 router.get("/:id/similar", auth, blogsController.getSimilarPosts);
 router.get("/pagination", blogsController.getAllPostWithPagination);
 
+// Comment
+router.get("/:post_id/comments", auth, blogsController.getCommentsForPost);
+router.post("/posts/:post_id/comments", auth, blogsController.addComment);
+router.put("/comments/:id", auth, blogsController.editComment);
+router.delete("/comments/:id", auth, blogsController.deleteComment);
+
+// Likess
+router.post("/:post_id/like", auth, blogsController.likePost);
+router.delete("/:post_id/like", auth, blogsController.unlikePost);
+router.get("/:post_id/like/:user_id", blogsController.hasUserLikedPost);
+router.get("/:post_id/likes", blogsController.getPostLikes);
+
 export default router;
