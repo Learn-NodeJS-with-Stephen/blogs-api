@@ -82,9 +82,9 @@ class AdminController {
       const [total_posts] = await db.query(
         `SELECT COUNT(*) AS total_posts FROM blog_posts`
       );
-      // const [total_comments] = await db.query(
-      //   `SELECT COUNT(*) AS total_comments FROM blog_comments`
-      // );
+      const [total_comments] = await db.query(
+        `SELECT COUNT(*) AS total_comments FROM post_comments`
+      );
       const [active_authors] = await db.query(
         `SELECT COUNT(DISTINCT user_id) AS active_authors FROM blog_posts`
       );
@@ -96,7 +96,7 @@ class AdminController {
         data: {
           total_users: total_users[0].total_users,
           total_posts: total_posts[0].total_posts,
-          // total_comments: total_comments[0].total_comments,
+          total_comments: total_comments[0].total_comments,
           active_authors: active_authors[0].active_authors,
           all_users: all_users,
         },
