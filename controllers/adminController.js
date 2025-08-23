@@ -33,6 +33,26 @@ class AdminController {
     }
   }
 
+  // Delete User
+  async deleteUser(req, res) {
+    try {
+      const userId = req.params.id;
+
+      const [user] = await db.query("SELECT * FROM users WHERE id = ?", [
+        userId,
+      ]);
+      if (user.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "User does not exist" });
+
+      await db.query("DELETE FROM users WHERE id = ?", [userId]);
+      res.json({ success: true, message: "User deleted successfully" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async getAllPosts(req, res) {
     try {
       const [posts] = await db.query(
@@ -113,6 +133,18 @@ class AdminController {
         [blogId, restriction_reason]
       );
       res.json({ success: true, message: "Blog post restricted" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  // Get All restricted posts
+  async getRestrictedPosts(req, res) {
+    try {
+      const [posts] = await db.query(
+        "SELECT * FROM blog_posts WHERE is_restricted = TRUE"
+      );
+      res.json({ success: true, data: posts });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }
@@ -200,6 +232,18 @@ class AdminController {
     }
   }
 
+  // Get restricted user
+  async getRestrictedUsers(req, res) {
+    try {
+      const [users] = await db.query(
+        "SELECT id, username, email, user_type FROM users WHERE is_active = FALSE"
+      );
+      res.json({ success: true, data: users });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async createCategory(req, res) {
     try {
       const { name } = req.body;
@@ -234,8 +278,15 @@ class AdminController {
     }
   }
 
-  // Post Comment
-  
+  // Get list of categories
+  async getCategories(req, res) {
+    try {
+      const [categories] = await db.query("SELECT * FROM blog_categories");
+      res.json({ success: true, data: categories });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
 }
 
 export default new AdminController();

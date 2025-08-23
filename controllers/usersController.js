@@ -95,6 +95,18 @@ class UsersController {
     }
   }
 
+  /// Get all users
+  async getAllUsers(req, res) {
+    try {
+      const [users] = await db.query(`SELECT * FROM users`);
+      res.json({ success: true, data: users });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  
+
   async getProfile(req, res) {
     try {
       const [user] = await db.query(
