@@ -71,7 +71,7 @@ class AdminController {
   async adminDashboard(req, res) {
     // Total post
     // Registered user
-    // Active authors
+    // Active authors|
     // Total Comments
     // Get all user
 
