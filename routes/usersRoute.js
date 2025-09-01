@@ -9,5 +9,6 @@ router.post("/login", usersController.loginUser);
 router.get("/get", auth, usersController.getAllUsers);
 router.get("/profile", auth, usersController.getProfile);
 router.put("/profile", auth, usersController.updateProfile);
+router.get("/authors", auth, usersController.getAuthorsWithPostCount);
 
 export default router;
