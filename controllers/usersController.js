@@ -195,35 +195,6 @@ class UsersController {
       res.status(500).json({ success: false, message: "Server error" });
     }
   }
-
-  // Get all authors and the total number of posts they created
-  async getAuthorsWithPostCount(req, res) {
-    try {
-      const [authors] = await db.query(
-        `SELECT 
-            u.id, 
-            u.username, 
-            u.email, 
-            u.first_name, 
-            u.last_name, 
-            u.user_type, 
-            u.is_active,
-            COUNT(bp.id) AS total_posts
-         FROM users u
-         JOIN blog_posts bp ON bp.user_id = u.id
-         WHERE bp.is_deleted = FALSE AND bp.is_restricted = FALSE
-         GROUP BY u.id, u.username, u.email, u.first_name, u.last_name, u.user_type, u.is_active
-         ORDER BY total_posts DESC`
-      );
-
-      res.json({
-        success: true,
-        data: authors,
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, error: err.message });
-    }
-  }
 }
 
 export default new UsersController();
