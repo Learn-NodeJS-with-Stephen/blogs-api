@@ -74,6 +74,7 @@ class AdminController {
     // Active authors|
     // Total Comments
     // Get all user
+    // Get all blog categories
 
     try {
       const [total_users] = await db.query(
@@ -90,6 +91,7 @@ class AdminController {
       );
 
       const [all_users] = await db.query(`SELECT * FROM users`);
+      const [all_categories] = await db.query(`SELECT * FROM blog_categories`);
 
       res.json({
         success: true,
@@ -98,6 +100,7 @@ class AdminController {
           total_posts: total_posts[0].total_posts,
           total_comments: total_comments[0].total_comments,
           active_authors: active_authors[0].active_authors,
+          all_categories: all_categories,
           all_users: all_users,
         },
       });
@@ -292,6 +295,6 @@ class AdminController {
 export default new AdminController();
 
 // TODO: after finding the blog, It should look for the blog post, if it doesn't find the post it should return with the error "blog post doesn't exist"
-// TODO: For restrist and delete post it should check if the post has already been restricted or deleted.
+// TODO: For restrict and delete post it should check if the post has already been restricted or deleted.
 // TODO: All the code should be in a try-catch block (Error handling)
 // TODO: When you are adding a new user or new category you first check if the name already exist in the DB

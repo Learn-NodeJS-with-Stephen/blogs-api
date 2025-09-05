@@ -6,7 +6,7 @@ import blogsController from "../controllers/blogsController.js";
 const router = express.Router();
 
 router.post("/", auth, blogsController.createPost);
-router.get("/authors", auth, blogsController.getAuthorsWithPostCount);
+router.get("/authors", blogsController.getAuthorsWithPostCount);
 router.put("/:id", auth, blogsController.updatePost);
 router.delete("/:id", auth, blogsController.deletePost);
 router.get("/pagination", blogsController.getAllPostWithPagination);

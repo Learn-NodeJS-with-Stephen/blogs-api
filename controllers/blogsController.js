@@ -137,6 +137,7 @@ class BlogsController {
     }
   }
 
+
   async getAllPost(req, res) {
     try {
       const [posts] =
