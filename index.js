@@ -29,6 +29,20 @@ db.getConnection()
       console.log(`Server is running on port ${PORT}`);
     });
   })
+
   .catch((err) => {
     console.error("Error connecting to the database:", err);
   });
+
+app.get("/", (req, res) => {
+  res.status(200).send(" Welcome to our BlogAPI");
+});
+
+app.get("/health", async (req, res) => {
+  const healthCheckResponse = {
+    status: "ok",
+    uptime: process.uptime(), // Uptime of the Node.js process in seconds
+    timestamp: new Date().toISOString(),
+  };
+  res.status(200).json(healthCheckResponse);
+});
