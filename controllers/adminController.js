@@ -33,6 +33,26 @@ class AdminController {
     }
   }
 
+  // Delete User
+  async deleteUser(req, res) {
+    try {
+      const userId = req.params.id;
+
+      const [user] = await db.query("SELECT * FROM users WHERE id = ?", [
+        userId,
+      ]);
+      if (user.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "User does not exist" });
+
+      await db.query("DELETE FROM users WHERE id = ?", [userId]);
+      res.json({ success: true, message: "User deleted successfully" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async getAllPosts(req, res) {
     try {
       const [posts] = await db.query(
@@ -51,9 +71,10 @@ class AdminController {
   async adminDashboard(req, res) {
     // Total post
     // Registered user
-    // Active authors
+    // Active authors|
     // Total Comments
     // Get all user
+    // Get all blog categories
 
     try {
       const [total_users] = await db.query(
@@ -62,22 +83,24 @@ class AdminController {
       const [total_posts] = await db.query(
         `SELECT COUNT(*) AS total_posts FROM blog_posts`
       );
-      // const [total_comments] = await db.query(
-      //   `SELECT COUNT(*) AS total_comments FROM blog_comments`
-      // );
+      const [total_comments] = await db.query(
+        `SELECT COUNT(*) AS total_comments FROM post_comments`
+      );
       const [active_authors] = await db.query(
         `SELECT COUNT(DISTINCT user_id) AS active_authors FROM blog_posts`
       );
 
       const [all_users] = await db.query(`SELECT * FROM users`);
+      const [all_categories] = await db.query(`SELECT * FROM blog_categories`);
 
       res.json({
         success: true,
         data: {
           total_users: total_users[0].total_users,
           total_posts: total_posts[0].total_posts,
-          // total_comments: total_comments[0].total_comments,
+          total_comments: total_comments[0].total_comments,
           active_authors: active_authors[0].active_authors,
+          all_categories: all_categories,
           all_users: all_users,
         },
       });
@@ -113,6 +136,18 @@ class AdminController {
         [blogId, restriction_reason]
       );
       res.json({ success: true, message: "Blog post restricted" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  // Get All restricted posts
+  async getRestrictedPosts(req, res) {
+    try {
+      const [posts] = await db.query(
+        "SELECT * FROM blog_posts WHERE is_restricted = TRUE"
+      );
+      res.json({ success: true, data: posts });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }
@@ -200,6 +235,18 @@ class AdminController {
     }
   }
 
+  // Get restricted user
+  async getRestrictedUsers(req, res) {
+    try {
+      const [users] = await db.query(
+        "SELECT id, username, email, user_type FROM users WHERE is_active = FALSE"
+      );
+      res.json({ success: true, data: users });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async createCategory(req, res) {
     try {
       const { name } = req.body;
@@ -234,13 +281,20 @@ class AdminController {
     }
   }
 
-  // Post Comment
-  
+  // Get list of categories
+  async getCategories(req, res) {
+    try {
+      const [categories] = await db.query("SELECT * FROM blog_categories");
+      res.json({ success: true, data: categories });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
 }
 
 export default new AdminController();
 
 // TODO: after finding the blog, It should look for the blog post, if it doesn't find the post it should return with the error "blog post doesn't exist"
-// TODO: For restrist and delete post it should check if the post has already been restricted or deleted.
+// TODO: For restrict and delete post it should check if the post has already been restricted or deleted.
 // TODO: All the code should be in a try-catch block (Error handling)
 // TODO: When you are adding a new user or new category you first check if the name already exist in the DB

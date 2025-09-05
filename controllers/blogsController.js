@@ -137,6 +137,7 @@ class BlogsController {
     }
   }
 
+
   async getAllPost(req, res) {
     try {
       const [posts] =
@@ -158,19 +159,40 @@ class BlogsController {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
+    const search = req.query.search || "";
+
+    const [countResult] = await db.query(
+      `SELECT COUNT(*) AS total
+     FROM blog_posts bp
+     WHERE bp.is_deleted = FALSE AND bp.is_restricted = FALSE
+     AND (bp.content LIKE ? OR bp.title LIKE ?)`,
+      [`%${search}%`, `%${search}%`]
+    );
+    const total = countResult[0].total;
 
     const [posts] = await db.query(
       `SELECT bp.id, title, content, bp.created_at, u.username, bc.name AS category
-       FROM blog_posts bp
-       JOIN users u ON u.id = bp.user_id
-       JOIN blog_categories bc ON bp.blog_category_id = bc.id
-       WHERE bp.is_deleted = FALSE AND bp.is_restricted = FALSE
-       ORDER BY bp.created_at DESC
-       LIMIT ?, ?`,
-      [offset, limit]
+     FROM blog_posts bp
+     JOIN users u ON u.id = bp.user_id
+     JOIN blog_categories bc ON bp.blog_category_id = bc.id
+     WHERE bp.is_deleted = FALSE AND bp.is_restricted = FALSE
+     AND (bp.content LIKE ? OR bp.title LIKE ?)
+     ORDER BY bp.created_at DESC
+     LIMIT ?, ?`,
+      [`%${search}%`, `%${search}%`, offset, limit]
     );
 
-    res.json({ success: true, data: posts });
+    res.json({
+      success: true,
+      data: posts,
+      meta: {
+        page,
+        limit,
+        total,
+        count: posts.length,
+        hasNext: offset + posts.length < total,
+      },
+    });
   }
 
   async getSimilarPosts(req, res) {
@@ -424,6 +446,37 @@ class BlogsController {
         [postId]
       );
       res.json({ success: true, total_likes: result[0].total_likes });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  // Get all authors and the total number of posts they created
+  async getAuthorsWithPostCount(req, res) {
+    try {
+      const [authors] = await db.query(
+        `SELECT 
+            u.id, 
+            u.username, 
+            u.email, 
+            u.first_name, 
+            u.last_name, 
+            u.user_type, 
+            u.is_active,
+            COUNT(bp.id) AS total_posts
+         FROM users u
+         LEFT JOIN blog_posts bp 
+           ON bp.user_id = u.id 
+           AND bp.is_deleted = FALSE 
+           AND bp.is_restricted = FALSE
+         GROUP BY u.id, u.username, u.email, u.first_name, u.last_name, u.user_type, u.is_active
+         ORDER BY total_posts DESC`
+      );
+
+      res.json({
+        success: true,
+        data: authors,
+      });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }

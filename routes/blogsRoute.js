@@ -6,19 +6,20 @@ import blogsController from "../controllers/blogsController.js";
 const router = express.Router();
 
 router.post("/", auth, blogsController.createPost);
+router.get("/authors", blogsController.getAuthorsWithPostCount);
 router.put("/:id", auth, blogsController.updatePost);
 router.delete("/:id", auth, blogsController.deletePost);
+router.get("/pagination", blogsController.getAllPostWithPagination);
 router.get("/", blogsController.getAllPost);
 router.get("/:id", auth, blogsController.getSinglePost);
 router.get("/my/post", auth, blogsController.getMyPost);
 router.get("/:id/similar", auth, blogsController.getSimilarPosts);
-router.get("/pagination", blogsController.getAllPostWithPagination);
 
 // Comment
-router.get("/:post_id/comments", auth, blogsController.getCommentsForPost);
-router.post("/posts/:post_id/comments", auth, blogsController.addComment);
-router.put("/comments/:id", auth, blogsController.editComment);
-router.delete("/comments/:id", auth, blogsController.deleteComment);
+router.get("/:post_id/comments", blogsController.getCommentsForPost);
+router.post("/:post_id/comment", auth, blogsController.addComment);
+router.put("/comment/:id", auth, blogsController.editComment);
+router.delete("/comment/:id", auth, blogsController.deleteComment);
 
 // Likess
 router.post("/:post_id/like", auth, blogsController.likePost);

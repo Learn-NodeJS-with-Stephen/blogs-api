@@ -95,6 +95,47 @@ class UsersController {
     }
   }
 
+  // Get all users with pagination and search
+  async getAllUsers(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const offset = (page - 1) * limit;
+      const search = req.query.search || "";
+
+      // Get total count for pagination
+      const [countResult] = await db.query(
+        `SELECT COUNT(*) AS total FROM users WHERE username LIKE ? OR email LIKE ?`,
+        [`%${search}%`, `%${search}%`]
+      );
+      const total = countResult[0].total;
+
+      // Get paginated users
+      const [users] = await db.query(
+        `SELECT id, first_name, last_name, username, email, user_type, is_active
+         FROM users
+         WHERE username LIKE ? OR email LIKE ?
+         ORDER BY id DESC
+         LIMIT ?, ?`,
+        [`%${search}%`, `%${search}%`, offset, limit]
+      );
+
+      res.json({
+        success: true,
+        data: users,
+        meta: {
+          page,
+          limit,
+          total,
+          count: users.length,
+          hasNext: offset + users.length < total,
+        },
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
   async getProfile(req, res) {
     try {
       const [user] = await db.query(

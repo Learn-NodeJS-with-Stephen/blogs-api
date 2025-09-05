@@ -17,5 +17,9 @@ router.put("/users/:id/restrict", adminController.restrictUser);
 router.post("/category", adminController.createCategory);
 router.get("/dashboard", adminController.adminDashboard);
 router.get("/users/:id/profile", adminController.viewUserProfile);
+router.delete("/:id", auth, adminController.deleteUser);
+router.get("/categories", adminController.getCategories);
+router.get("/users", adminController.getRestrictedUsers);
+router.get("/posts/restricted", adminController.getRestrictedPosts);
 
 export default router;
